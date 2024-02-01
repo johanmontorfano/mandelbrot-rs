@@ -6,12 +6,14 @@ use std::rc::Rc;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
-use winit::event::{Event, WindowEvent};
+use winit::event::{ElementState, Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use crate::mandelbrot::Mandelbrot;
 
 const MAX_GEN_THREADS: u32 = 8;
+const ZOOMING_RATE: f32 = 0.01;
+const MOVING_RATE: f32 = 5.0;
 
 fn main() {
     let event_loop = EventLoop::new().expect("Failed to initialize EventLoop");
@@ -28,6 +30,22 @@ fn main() {
     event_loop.run(move |event, window_target| {
         match event {
             Event::WindowEvent { event: WindowEvent::CloseRequested, .. } => { window_target.exit(); }
+            Event::WindowEvent { event: WindowEvent::KeyboardInput { event, .. }, .. } => {
+                let is_pressed = event.state == ElementState::Pressed;
+                let key_target = event.logical_key.to_text();
+
+                if is_pressed && key_target.is_some() { match key_target.unwrap() {
+                    "i" => { scale += ZOOMING_RATE; }                // ZOOM IN
+                    "o" => { scale -= ZOOMING_RATE; }                // ZOOM OUT
+                    "l" => { x_additional_offset += MOVING_RATE; }   // RIGHT
+                    "r" => { x_additional_offset -= MOVING_RATE; }   // LEFT
+                    "t" => { y_additional_offset += MOVING_RATE; }   // TOP
+                    "b" => { y_additional_offset -= MOVING_RATE; }   // BOTTOM
+                    _ => ()
+                } }
+
+                window.request_redraw();
+            }
             Event::WindowEvent { event: WindowEvent::RedrawRequested, .. } => {
                 let (width, height) = window.inner_size().into();
 
