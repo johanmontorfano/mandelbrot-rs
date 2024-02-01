@@ -1,6 +1,6 @@
 use num::Complex;
 
-const MAX_ITER: u16 = 250;
+const MAX_ITER: u16 = 25;
 const PRECISION: f64 = 16.0;
 
 #[derive(Copy, Clone)]
@@ -41,9 +41,11 @@ impl Mandelbrot {
 
         if n == MAX_ITER { [0, 0, 0] }
         else {
-            let r = (n as f64 / MAX_ITER as f64 * 255.0) as u8;
-            let g = 0;
-            let b = 255 - r;
+            let n = n as f64;
+
+            let r = (n / 25.0 * 255.0) as u8;
+            let g = (n / 30.0 * 255.0) as u8;
+            let b = (n / 35.0 * 255.0) as u8;
 
             [r, g, b]
         }
