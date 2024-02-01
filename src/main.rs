@@ -12,8 +12,8 @@ use winit::window::WindowBuilder;
 use crate::mandelbrot::Mandelbrot;
 
 const MAX_GEN_THREADS: u32 = 8;
-const ZOOMING_RATE: f32 = 0.01;
-const MOVING_RATE: f32 = 5.0;
+const ZOOMING_RATE: f64 = 0.01;
+const MOVING_RATE: f64 = 5.0;
 
 fn main() {
     let event_loop = EventLoop::new().expect("Failed to initialize EventLoop");
