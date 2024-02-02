@@ -9,7 +9,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use winit::event::{ElementState, Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
-use winit::window::WindowBuilder;
+use winit::window::{Fullscreen, WindowBuilder};
 use crate::mandelbrot::Mandelbrot;
 
 const MAX_GEN_THREADS: u32 = 8;
@@ -32,6 +32,7 @@ fn main() {
     let mut resolution = MAX_ITER;
     let mut precision = PRECISION;
 
+    window.set_title("mandelbrot generator");
     event_loop.set_control_flow(ControlFlow::Wait);
 
     event_loop.run(move |event, window_target| {
