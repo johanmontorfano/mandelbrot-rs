@@ -9,6 +9,10 @@ To move into the set, use the following keys:
 - `r` - Right
 - `t` - Top
 - `b` - Bottom
+- `&` - Lower resolution
+- `é` - Higher resolution
+- `(` - Lower precision
+- `-` - Higher precision
 
 ### Missing features/Improvements
 - Auto zooming animation

@@ -1,4 +1,5 @@
 mod mandelbrot;
+// mod mandelbrot_gpu;
 
 use softbuffer::{Context, Surface};
 use std::num::NonZeroU32;
@@ -14,8 +15,12 @@ use crate::mandelbrot::Mandelbrot;
 const MAX_GEN_THREADS: u32 = 8;
 const ZOOMING_RATE: f64 = 0.01;
 const MOVING_RATE: f64 = 5.0;
+const MAX_ITER: u16 = 255;
+const PRECISION: f64 = 16.0;
 
 fn main() {
+    println!("MANDELBROT GPU IMPLEMENTATION IS MISSING");
+
     let event_loop = EventLoop::new().expect("Failed to initialize EventLoop");
     let window = Rc::new(WindowBuilder::new().build(&event_loop).expect("Failed to initialize Window"));
     let context = Context::new(window.clone()).expect("Failed to initialize window context.");
@@ -24,6 +29,8 @@ fn main() {
     let mut scale = 0.4;
     let mut x_additional_offset = 0.0;
     let mut y_additional_offset = 0.0;
+    let mut resolution = MAX_ITER;
+    let mut precision = PRECISION;
 
     event_loop.set_control_flow(ControlFlow::Wait);
 
@@ -41,6 +48,10 @@ fn main() {
                     "r" => { x_additional_offset -= MOVING_RATE; }   // LEFT
                     "t" => { y_additional_offset += MOVING_RATE; }   // TOP
                     "b" => { y_additional_offset -= MOVING_RATE; }   // BOTTOM
+                    "&" => { resolution -= 1; }                      // LOWER RESOLUTION
+                    "é" => { resolution += 1; }                      // HIGHER RESOLUTION
+                    "(" => { precision -= 1.0; }                     // LOWER PRECISION
+                    "-" => { precision += 1.0; }                     // HIGHER PRECISION
                     _ => ()
                 } }
 
@@ -53,7 +64,7 @@ fn main() {
                     .expect("Failed to resize the surface.");
 
                 let mut mandelbrot = Mandelbrot::init_with_offset_and_scale_for_coords(
-                    (width, height), scale
+                    (width, height), scale, precision, resolution
                 );
                 mandelbrot.offset_x += x_additional_offset;
                 mandelbrot.offset_y += y_additional_offset;

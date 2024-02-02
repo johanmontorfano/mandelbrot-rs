@@ -1,24 +1,28 @@
 use num::Complex;
 
-const MAX_ITER: u16 = 25;
-const PRECISION: f64 = 16.0;
-
 #[derive(Copy, Clone)]
 pub struct Mandelbrot {
-    width: f64,
-    height: f64,
+    pub width: f64,
+    pub height: f64,
     pub offset_x: f64,
     pub offset_y: f64,
-    scale: f64
+    pub scale: f64,
+    pub max_iter: u16,
+    pub precision: f64
 }
 
 impl Mandelbrot {
-    pub fn init_with_offset_and_scale_for_coords(size: (u32, u32), scale: f64) -> Self {
+    pub fn init_with_offset_and_scale_for_coords(
+        size: (u32, u32),
+        scale: f64,
+        precision: f64,
+        max_iter: u16
+    ) -> Self {
         let width = size.0 as f64;
         let height = size.1 as f64;
 
         Self {
-            width, height, scale,
+            width, height, scale, precision, max_iter,
             offset_x: width * 0.75,
             offset_y: height / 2.0
         }
@@ -34,12 +38,12 @@ impl Mandelbrot {
         let mut z = Complex::new(0.0, 0.0);
         let mut n = 0_u16;
 
-        while z.norm() < PRECISION && n < MAX_ITER {
+        while z.norm() < self.precision && n < self.max_iter {
             z = z * z + c;
             n += 1;
         }
 
-        if n == MAX_ITER { [0, 0, 0] }
+        if n == self.max_iter { [0, 0, 0] }
         else {
             let n = n as f64;
 
