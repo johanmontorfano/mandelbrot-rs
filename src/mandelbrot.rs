@@ -30,15 +30,16 @@ impl Mandelbrot {
 
     // Computes a point color using Mandelbrot proper computations and the final result at allowed
     // MAX_ITER.
-    pub fn get_point_color_at_coords(&self, x: i32, y: i32) -> [u8; 3] {
-        let x = (x as f64 - self.offset_x) / self.scale;
-        let y = (y as f64 - self.offset_y) / self.scale;
+    #[inline(always)]
+    pub fn get_point_color_at_coords(&self, x: u32, y: u32) -> [u8; 3] {
+        let x = (f64::from(x) - self.offset_x) / self.scale;
+        let y = (f64::from(y) - self.offset_y) / self.scale;
 
         let c = Complex::new(x / self.width, y / self.height);
         let mut z = Complex::new(0.0, 0.0);
         let mut n = 0_u16;
 
-        while z.norm() < self.precision && n < self.max_iter {
+        while z.norm_sqr() < self.precision && n < self.max_iter {
             z = z * z + c;
             n += 1;
         }

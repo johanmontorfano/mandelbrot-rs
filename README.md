@@ -14,7 +14,11 @@ To move into the set, use the following keys:
 - `(` - Lower precision
 - `-` - Higher precision
 
+### Fast Rendering
+If the source code is compiled without optimizations, the resulting mandelbrot set viewer will not be efficient at all.
+Hence, make sure that optimizations are enabled in the compiler (Enabled by default in the Cargo file.)
+
 ### Missing features/Improvements
 - Auto zooming animation
-- Faster rendering
+- Better zoom handling
 - Better color palette

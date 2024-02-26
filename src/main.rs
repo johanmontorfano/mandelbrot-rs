@@ -1,5 +1,4 @@
 mod mandelbrot;
-// mod mandelbrot_gpu;
 
 use softbuffer::{Context, Surface};
 use std::num::NonZeroU32;
@@ -9,18 +8,16 @@ use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
 use winit::event::{ElementState, Event, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
-use winit::window::{Fullscreen, WindowBuilder};
+use winit::window::WindowBuilder;
 use crate::mandelbrot::Mandelbrot;
 
 const MAX_GEN_THREADS: u32 = 8;
 const ZOOMING_RATE: f64 = 0.01;
 const MOVING_RATE: f64 = 5.0;
-const MAX_ITER: u16 = 255;
-const PRECISION: f64 = 16.0;
+const MAX_ITER: u16 = 128;
+const PRECISION: f64 = 4.0;
 
 fn main() {
-    println!("MANDELBROT GPU IMPLEMENTATION IS MISSING");
-
     let event_loop = EventLoop::new().expect("Failed to initialize EventLoop");
     let window = Rc::new(WindowBuilder::new().build(&event_loop).expect("Failed to initialize Window"));
     let context = Context::new(window.clone()).expect("Failed to initialize window context.");
@@ -87,9 +84,7 @@ fn main() {
 
                         for x in width_offset..(width_offset + thread_gen_width_res) {
                             for y in 0..height {
-                                let color = mandelbrot.get_point_color_at_coords(
-                                    x.clone() as i32, y.clone() as i32
-                                );
+                                let color = mandelbrot.get_point_color_at_coords(x, y);
                                 let pixel_number = y * width + x;
                                 let bor_pixel = color[0] as u32 | (color[1] as u32) << 8 | (color[2] as u32) << 16;
 
@@ -104,10 +99,7 @@ fn main() {
                     let received_color = rx.recv().unwrap();
                     buffer[received_color.1 as usize] = received_color.0;
                 }
-
                 buffer.present().unwrap();
-
-                println!("Rendered {} pixels with Mandelbrot.", width * height);
             }
             _ => ()
         }
