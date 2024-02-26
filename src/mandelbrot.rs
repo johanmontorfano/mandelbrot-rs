@@ -38,20 +38,16 @@ impl Mandelbrot {
         let c = Complex::new(x / self.width, y / self.height);
         let mut z = Complex::new(0.0, 0.0);
         let mut n = 0_u16;
-
         while z.norm_sqr() < self.precision && n < self.max_iter {
             z = z * z + c;
             n += 1;
         }
-
         if n == self.max_iter { [0, 0, 0] }
         else {
             let n = n as f64;
-
             let r = (n / 25.0 * 255.0) as u8;
             let g = (n / 30.0 * 255.0) as u8;
             let b = (n / 35.0 * 255.0) as u8;
-
             [r, g, b]
         }
     }
